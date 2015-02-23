@@ -10,12 +10,13 @@
 namespace Wrr;
 
 /**
- * Class RouteInterface
+ * Interface RouteInterface
+ *
  * @package Wrr
+ * @author borbyu
  */
 interface RouteInterface
 {
-
     /**
      * @param Request $request
      * @return mixed
@@ -23,20 +24,8 @@ interface RouteInterface
     public function match(Request $request);
 
     /**
-     * @param string $pattern
-     * @param string $method
-     * @return bool
-     */
-    public function matchesPattern($pattern, $method);
-
-    /**
      * @return AbstractResponse
      */
     public function route();
 
-    /**
-     * @param AbstractResponse $response
-     * @return void
-     */
-    public function setResponse(AbstractResponse $response);
 }

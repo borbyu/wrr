@@ -2,8 +2,7 @@
 ========================
 
 A lightweight, and super fast PHP 5.3+ Request Routing Library and nothing else
-
-This can be used standalone but most likely it will be used as a building block for other apps
+Contributions are welcome.
 
 Usage:
 
@@ -27,29 +26,42 @@ Usage:
      * matches 'admin|root'
      */
     class AdminRoute implements \Wrr\RouteInterface {
-           /**
-            * regex constant
-            */
-           const ADMIN_PATTERN = 'admin|root';
+        /**
+         * regex constant
+         */
+        const ADMIN_PATTERN = 'admin|root';
 
-           /**
-            * @param Response $response
-            * @return Response
-            */
-           public function route(Response $response)
-           {
-               $response->addBodyFragment("You are in Admin Land... be careful.");
-               return $response;
-           }
+        /**
+         * @var AbstractResponse
+         */
+        private $response;
 
-           /**
-            * @param $toMatch
-            * @return bool
-            */
-           public function matchesPattern($toMatch)
-           {
-               $regex = "@" . self::ADMIN_PATTERN . "@";
-               return (bool) preg_match($regex, $toMatch);
+        /**
+         * @param \Wrr\AbstractResponse $response
+         */
+        public function __construct(\Wrr\AbstractResponse $response)
+        {
+            $this->response = $response;
+        }
+
+        /**
+         * @return \Wrr\AbstractResponse
+         */
+        public function route()
+        {
+            $this->response->addBodyFragment("You are in Admin Land... be careful.");
+            return $this->response;
+        }
+
+        /**
+         * @param $toMatch
+         * @return bool
+         */
+        public function match(Request $request)
+        {
+            $regex = "@" . self::ADMIN_PATTERN . "@";
+            return (bool) preg_match($regex, $request->getRelativeUri());
+        }
     }
     $router->registerRoute(new AdminRoute());
 
@@ -58,11 +70,12 @@ Usage:
      */
     class HelloWorldRoute extends \Wrr\DefaultRoute {
         public function __construct() {
-            parent::__construct('^/blog$', function() {
+            $fun = function () {
                 ob_start();
-                $myBlogApp::run();
-                return ob_clean();
-            }
+                //$myBlogApp::run();
+                return ob_get_clean();
+            };
+            parent::__construct('^/blog$', $fun);
         }
     }
     $router->registerRoute(new HelloWorldRouteRoute());

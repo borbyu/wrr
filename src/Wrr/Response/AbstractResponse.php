@@ -10,8 +10,10 @@
 namespace Wrr;
 
 /**
- * Abstract Class AbstractResponse
+ * Class AbstractResponse
+ *
  * @package Wrr
+ * @author  borbyu
  */
 abstract class AbstractResponse
 {

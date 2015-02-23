@@ -11,7 +11,9 @@ namespace Wrr;
 
 /**
  * Class Router
+ *
  * @package Wrr
+ * @author  borbyu
  */
 class Router
 {
@@ -24,10 +26,6 @@ class Router
      * @var null|Request
      */
     private $request = null;
-    /**
-     * @var null|Response
-     */
-    private $response = null;
 
     /**
      * @var array
@@ -35,14 +33,10 @@ class Router
     private $routes = array();
 
     /**
-     * @param Response $response
      */
-    public function __construct(AbstractResponse $response = null)
+    public function __construct($uriBase = "")
     {
-        if (is_null($response)) {
-            $response = new DefaultResponse();
-        }
-        $this->response = $response;
+        $this->uriBase = $uriBase;
     }
 
     /**
@@ -66,17 +60,7 @@ class Router
     }
 
     /**
-     * @param Response $response
-     * @return $this
-     */
-    public function setResponse(AbstractResponse $response)
-    {
-        $this->response = $response;
-        return $this;
-    }
-
-    /**
-     * @param $uriBase
+     * @param string $uriBase
      * @return $this
      */
     public function setUriBase($uriBase)
@@ -95,16 +79,18 @@ class Router
 
     /**
      * Process Route
-     * @return Response
+     * @return AbstractResponse
      * @throws \RunTimeException
      */
     public function route()
     {
+        if ($this->getUriBase()) {
+            $this->request->setUriBase($this->getUriBase());
+        }
         foreach ($this->routes as $route) {
-            $pattern = str_replace($this->getUriBase(), "", $this->getRequest()->getRequestUri());
             /* @var \Wrr\RouteInterface $route */
-            if ($route->matchesPattern($pattern, $this->request->getRequestMethod())) {
-                return $route->route($this->response);
+            if ($route->match($this->request)) {
+                return $route->route();
             }
         }
         throw new \RuntimeException('Resource Not Found', 404);

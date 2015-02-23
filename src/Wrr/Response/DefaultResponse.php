@@ -11,7 +11,9 @@ namespace Wrr;
 
 /**
  * Class DefaultResponse
+ *
  * @package Wrr
+ * @author  borbyu
  */
 class DefaultResponse extends AbstractResponse
 {

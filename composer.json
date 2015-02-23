@@ -12,6 +12,10 @@
         "psr-0": {"Wrr\\": "src/"}
     },
     "require": {
-        "phpunit/phpunit": "3.7.0"
+        "phpunit/phpunit": "3.7.*"
+    },
+    "config": {
+        "vendor-dir": "vendor/",
+        "bin-dir": "bin/"
     }
 }

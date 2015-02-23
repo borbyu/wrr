@@ -11,7 +11,9 @@ namespace Wrr;
 
 /**
  * Class Request
+ *
  * @package Wrr
+ * @author  borbyu
  */
 class Request
 {
@@ -43,6 +45,10 @@ class Request
      * @var string
      */
     private $userAgent;
+    /**
+     * @var string
+     */
+    private $uriBase;
 
     /**
      * @var array
@@ -59,6 +65,9 @@ class Request
      */
     private $requestBody = '';
 
+    /**
+     * @var array
+     */
     private $requestHeaders = array();
 
     /**
@@ -93,10 +102,11 @@ class Request
             $request->setRequestTime($_SERVER['REQUEST_TIME']);
             $request->setRequestEndPoint($_SERVER['SCRIPT_NAME']);
         }
-        foreach (array('$_GET', '$_POST', '$_COOKIES', '$_FILES') as $supers) {
+        foreach (
+            array('get'=> $_GET, 'post' => $_POST, 'cookie' => $_COOKIE, 'files' => $_FILES) as $container=>$supers
+        ) {
             if (isset($supers) && is_array($supers)) {
                 foreach ($supers as $key => $value) {
-                    $container = strtolower(substr($supers, 2));
                     $request->setRequestVar($container, $key, $value);
                 }
             }
@@ -138,7 +148,7 @@ class Request
     /**
      * @param array $requestHeaders
      */
-    public function setRequestHeaders($requestHeaders)
+    public function setRequestHeaders(array $requestHeaders)
     {
         $this->requestHeaders = $requestHeaders;
     }
@@ -154,7 +164,7 @@ class Request
     /**
      * @param array $requestVars
      */
-    public function setRequestVars($requestVars)
+    public function setRequestVars(array $requestVars)
     {
         $this->requestVars = $requestVars;
     }
@@ -280,15 +290,26 @@ class Request
     }
 
     /**
-     * @return mixed|string
+     * @param string $uriBase
      */
-    public function getRoutingPath() {
-        $base = str_replace(
-            $this->getRequestUri(),
-            "",
-            $this->getRequestEndPoint()
-        );
-        $base = substr($base, 0, strlen($base) - strpos($base, '/'));
-        return $base;
+    public function setUriBase($uriBase)
+    {
+        $this->uriBase = $uriBase;
+    }
+
+    /**
+     * @return string
+     */
+    public function getUriBase()
+    {
+        return $this->uriBase;
+    }
+
+    /**
+     * @return string
+     */
+    public function getRelativeUri()
+    {
+        return str_replace($this->getUriBase(), "", $this->getRequestUri());
     }
 }

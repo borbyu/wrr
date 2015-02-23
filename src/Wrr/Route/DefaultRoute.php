@@ -11,11 +11,12 @@ namespace Wrr;
 
 /**
  * Class DefaultRoute
+ *
  * @package Wrr
+ * @author  borbyu
  */
-class RestRoute implements RouteInterface
+class DefaultRoute implements RouteInterface
 {
-
     /**
      * @var string
      */
@@ -29,74 +30,51 @@ class RestRoute implements RouteInterface
      */
     private $method;
     /**
-     * @var \Wrr\Response
+     * @var AbstractResponse 
      */
-    private $response;
-
+	private $response;
+    
     /**
      * @param string $pattern
      * @param \Closure $function
-     * @param string $method
-     * @param AbstractResponse $response
      */
-    public function __construct (
-    		$pattern, 
-    		\Closure $function, 
-    		$method, 
-    		AbstractResponse $response
-	)
+    public function __construct($pattern, \Closure $function, $method = "GET")
     {
         $this->pattern = $pattern;
         $this->function = $function;
         $this->method = $method;
-        $this->setResponse($response);
+        $this->response = new DefaultResponse();
     }
 
     /**
      * Do the routing and call the closure
      *
-     * @param Response $response
-     * @return Response
+     * @return AbstractResponse
      */
     public function route()
     {
         if (is_callable($this->function)) {
             $fun = $this->function;
-            $result = $fun();
-            if (is_scalar($result)) {
-	            $this->response->addBodyFragment($result);
-            } else if (method_exists($this->response, 'setData')) {
-            	$this->response->setData($result);
-            }
-            else {
-            	throw new \Exception('No Result to Route', 500);
-            }
+            $this->response->addBodyFragment($fun());
         }
         return $this->response;
     }
-
+  
     /**
      * @param Request $request
      */
     public function match(Request $request)
     {
-        $pattern = str_replace($request->getUriBase(), "", $request->getRequestUri());
-        return $this->matchesPattern($pattern);
+        return $this->matchesPattern($request->getRelativeUri());
     }
 
     /**
      * @param string $toMatch
-     * @param string $method
      * @return bool
      */
-    public function matchesPattern($toMatch, $method)
+    private function matchesPattern($toMatch, $method = "GET")
     {
         $regex = "@" . $this->pattern . "@";
         return (bool) preg_match($regex, $toMatch) && $method == $this->method;
-    }
-    
-    public function setResponse(AbstractResponse $response)
-    {
-    	$this->response = $response;	
     }
 }

@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<phpunit colors="true" bootstrap="bootstrap.php">
+    <!-- ALL TEST SUITES -->
+    <testsuites>
+        <testsuite name="Wrr Unit Tests">
+            <directory suffix=".php">./</directory>
+        </testsuite>
+    </testsuites>
+    <!-- FILTERS -->
+</phpunit>

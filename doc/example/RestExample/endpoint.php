@@ -20,8 +20,8 @@ require_once __DIR__ . '/../../../vendor/autoload.php';
 $router = new Router();
 $router->registerRoute(
     new DefaultRoute(
-        '^/',                                                   
-        function () { return "Wrr!... You've been served! "; }  
+        '^/',
+        function () { return "Wrr!... You've been served! "; }
     )
 ); // catch all
 
@@ -29,10 +29,10 @@ include_once 'RestController.php';
 $controller = new RestController($router, \Wrr\Request::populateFromGlobals());
 $jsonResponse = new JsonResponse();
 $router->registerRoute(
-	new \Wrr\RestRoute(
-        'rest',                                                 
-        function () use ($controller) { 
-        	return $controller->dispatch();
+    new \Wrr\RestRoute(
+        'rest',
+        function () use ($controller) {
+            return $controller->dispatch();
         },
         "GET",
         $jsonResponse
@@ -41,14 +41,14 @@ $router->registerRoute(
 
 $defaultResponse = new DefaultResponse();
 $router->registerRoute(
-	new \Wrr\RestRoute(
-		'rest',
-		function () {
-			return array("Brocks status", "Brock is Cool!");
-		},
-		"POST",
-		$jsonResponse 
-	)
+    new \Wrr\RestRoute(
+        'rest',
+        function () {
+            return array("Brocks status", "Brock is Cool!");
+        },
+        "POST",
+        $jsonResponse
+    )
 );
 
 try {
