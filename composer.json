@@ -1,0 +1,17 @@
+{
+    "name": "woys/wrr",
+    "description": "Wrr is a Request Router",
+    "minimum-stability": "stable",
+    "authors": [
+        {
+            "name": "Jason Woys",
+            "email": "jason@woys.org"
+        }
+    ],
+    "autoload": {
+        "psr-0": {"Wrr\\": "src/"}
+    },
+    "require": {
+        "phpunit/phpunit": "3.7.0"
+    }
+}

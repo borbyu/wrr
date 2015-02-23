@@ -1,0 +1,294 @@
+<?php
+/**
+ * This file is part of the Wrr package.
+ *
+ * (c) Jason Woys <jason@woys.org>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+namespace Wrr;
+
+/**
+ * Class Request
+ * @package Wrr
+ */
+class Request
+{
+    /**
+     * @var
+     */
+    private $requestTime;
+    /**
+     * @var
+     */
+    private $requestUri;
+    /**
+     * @var
+     */
+    private $requestMethod;
+    /**
+     * @var
+     */
+    private $remoteAddr;
+    /**
+     * @var
+     */
+    private $queryString;
+    /**
+     * @var
+     */
+    private $requestEndPoint;
+    /**
+     * @var string
+     */
+    private $userAgent;
+
+    /**
+     * @var array
+     */
+    private $requestVars = array (
+        'get' => array(),
+        'post' => array(),
+        'cookie' => array(),
+        'files' => array()
+    );
+
+    /**
+     * @var string
+     */
+    private $requestBody = '';
+
+    private $requestHeaders = array();
+
+    /**
+     * @param string $requestUri
+     */
+    public function __construct($requestUri = null)
+    {
+        if ($requestUri) {
+            $this->setRequestUri($requestUri);
+        }
+    }
+
+    /**
+     * Get a populated request object from PHP Super Globals
+     * ($_SERVER, $_GET, $_POST, $_COOKIES, and $_FILES)
+     *
+     * @return Request
+     */
+    public static function populateFromGlobals()
+    {
+        $request = new Request();
+        if (function_exists('apache_request_headers')) {
+            $request->setRequestHeaders(apache_request_headers());
+        }
+        $request->setRequestBody(file_get_contents('php://input'));
+        if (isset($_SERVER)) {
+            $request->setUserAgent($_SERVER['HTTP_USER_AGENT']);
+            $request->setQueryString($_SERVER['QUERY_STRING']);
+            $request->setRemoteAddr($_SERVER['REMOTE_ADDR']);
+            $request->setRequestMethod($_SERVER['REQUEST_METHOD']);
+            $request->setRequestUri($_SERVER['REQUEST_URI']);
+            $request->setRequestTime($_SERVER['REQUEST_TIME']);
+            $request->setRequestEndPoint($_SERVER['SCRIPT_NAME']);
+        }
+        foreach (array('$_GET', '$_POST', '$_COOKIES', '$_FILES') as $supers) {
+            if (isset($supers) && is_array($supers)) {
+                foreach ($supers as $key => $value) {
+                    $container = strtolower(substr($supers, 2));
+                    $request->setRequestVar($container, $key, $value);
+                }
+            }
+        }
+        return $request;
+    }
+
+    /**
+     * @param string $container
+     * @param string $key
+     * @param mixed $value
+     * @return $this
+     */
+    public function setRequestVar($container, $key, $value)
+    {
+        if (!isset($this->requestVars[$container])) {
+            $this->requestVars[$container] = array();
+        }
+        $this->requestVars[$container][$key] = $value;
+        return $this;
+    }
+
+    /**
+     * @param string $requestBody
+     */
+    public function setRequestBody($requestBody)
+    {
+        $this->requestBody = $requestBody;
+    }
+
+    /**
+     * @return string
+     */
+    public function getRequestBody()
+    {
+        return $this->requestBody;
+    }
+
+    /**
+     * @param array $requestHeaders
+     */
+    public function setRequestHeaders($requestHeaders)
+    {
+        $this->requestHeaders = $requestHeaders;
+    }
+
+    /**
+     * @return array
+     */
+    public function getRequestHeaders()
+    {
+        return $this->requestHeaders;
+    }
+
+    /**
+     * @param array $requestVars
+     */
+    public function setRequestVars($requestVars)
+    {
+        $this->requestVars = $requestVars;
+    }
+
+    /**
+     * @return array
+     */
+    public function getRequestVars()
+    {
+        return $this->requestVars;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getRequestTime ()
+    {
+        return $this->requestTime;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getRequestUri ()
+    {
+        return $this->requestUri;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getRequestMethod ()
+    {
+        return $this->requestMethod;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getRemoteAddr ()
+    {
+        return $this->remoteAddr;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getQueryString ()
+    {
+        return $this->queryString;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getRequestEndPoint ()
+    {
+        return $this->requestEndPoint;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getUserAgent ()
+    {
+        return $this->userAgent;
+    }
+
+    /**
+     * @param $requestTime
+     */
+    public function setRequestTime ($requestTime)
+    {
+        $this->requestTime = $requestTime;
+    }
+
+    /**
+     * @param $requestUri
+     */
+    public function setRequestUri ($requestUri)
+    {
+        $this->requestUri = $requestUri;
+    }
+
+    /**
+     * @param $requestMethod
+     */
+    public function setRequestMethod ($requestMethod)
+    {
+        $this->requestMethod = $requestMethod;
+    }
+
+    /**
+     * @param $remoteAddr
+     */
+    public function setRemoteAddr ($remoteAddr)
+    {
+        $this->remoteAddr = $remoteAddr;
+    }
+
+    /**
+     * @param $queryString
+     */
+    public function setQueryString ($queryString)
+    {
+        $this->queryString = $queryString;
+    }
+
+    /**
+     * @param $requestEndPoint
+     */
+    public function setRequestEndPoint ($requestEndPoint)
+    {
+        $this->requestEndPoint = $requestEndPoint;
+    }
+
+    /**
+     * @param $userAgent
+     */
+    public function setUserAgent ($userAgent)
+    {
+        $this->userAgent = $userAgent;
+    }
+
+    /**
+     * @return mixed|string
+     */
+    public function getRoutingPath() {
+        $base = str_replace(
+            $this->getRequestUri(),
+            "",
+            $this->getRequestEndPoint()
+        );
+        $base = substr($base, 0, strlen($base) - strpos($base, '/'));
+        return $base;
+    }
+}
