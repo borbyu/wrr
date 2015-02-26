@@ -101,18 +101,15 @@ Usage:
             ->deliverPayLoad();
     }
 
-# About
-======
-
 # Requirements:
-Any flavor of PHP 5.3 or above should do
-[optional] PHPUnit 3.5+ to execute the test suite (phpunit --version)
+#### Any flavor of PHP 5.3 or above should do
+#### PHPUnit 3.5+ to execute the test suite (phpunit --version)
 
 # Author
 ======
 
-jason woys aka borbyu <jason@woys.org>
-Copyright 2013 Jason Woys (all rights reserved)
+#### Jason Woys aka borbyu <jason@woys.org>
+#### Copyright 2013 Jason Woys (all rights reserved)
 
 
 # License
