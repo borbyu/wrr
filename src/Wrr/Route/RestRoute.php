@@ -7,7 +7,11 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
-namespace Wrr;
+namespace Wrr\Route;
+
+use Wrr\Request;
+use Wrr\Response\AbstractResponse;
+use Wrr\RouteInterface;
 
 /**
  * Class RestRoute
@@ -46,8 +50,7 @@ class RestRoute implements RouteInterface
         \Closure $function,
         $method,
         AbstractResponse $response
-    )
-    {
+    ) {
         $this->pattern = $pattern;
         $this->function = $function;
         $this->method = $method;
@@ -58,6 +61,7 @@ class RestRoute implements RouteInterface
      * Do the routing and call the closure
      *
      * @return AbstractResponse
+     * @throws \Exception
      */
     public function route()
     {
@@ -68,8 +72,7 @@ class RestRoute implements RouteInterface
                 $this->response->addBodyFragment($result);
             } elseif (method_exists($this->response, 'setData')) {
                 $this->response->setData($result);
-            }
-            else {
+            } else {
                 throw new \Exception('No Result to Route', 500);
             }
         }

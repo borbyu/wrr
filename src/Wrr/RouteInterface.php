@@ -24,8 +24,7 @@ interface RouteInterface
     public function match(Request $request);
 
     /**
-     * @return AbstractResponse
+     * @return \Wrr\Response\AbstractResponse
      */
     public function route();
-
 }

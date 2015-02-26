@@ -102,9 +102,8 @@ class Request
             $request->setRequestTime($_SERVER['REQUEST_TIME']);
             $request->setRequestEndPoint($_SERVER['SCRIPT_NAME']);
         }
-        foreach (
-            array('get'=> $_GET, 'post' => $_POST, 'cookie' => $_COOKIE, 'files' => $_FILES) as $container=>$supers
-        ) {
+        $supersSet = array('get'=> $_GET, 'post' => $_POST, 'cookie' => $_COOKIE, 'files' => $_FILES);
+        foreach ($supersSet as $container => $supers) {
             if (isset($supers) && is_array($supers)) {
                 foreach ($supers as $key => $value) {
                     $request->setRequestVar($container, $key, $value);

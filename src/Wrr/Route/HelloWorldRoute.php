@@ -1,13 +1,16 @@
 <?php
+namespace Wrr\Route;
 
 /**
  * Class HelloWorldRoute *
  */
-class HelloWorldRoute extends \Wrr\DefaultRoute {
+class HelloWorldRoute extends DefaultRoute
+{
     /**
      * Constructor
      */
-    public function __construct() {
+    public function __construct()
+    {
         $fun = function () {
             ob_start();
             //$myBlogApp::run();

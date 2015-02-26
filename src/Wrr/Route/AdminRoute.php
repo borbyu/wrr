@@ -7,14 +7,20 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
-namespace Wrr;
+namespace Wrr\Route;
+
+use Wrr\Request;
+use Wrr\Response\AbstractResponse;
+use Wrr\RouteInterface;
 
 /**
  * Class AdminRoute
  *
+ * @package Wrr
  * @author borbyu
  */
-class AdminRoute implements \Wrr\RouteInterface {
+class AdminRoute implements RouteInterface
+{
     /**
      * regex constant
      */
@@ -26,15 +32,15 @@ class AdminRoute implements \Wrr\RouteInterface {
     private $response;
 
     /**
-     * @param \Wrr\AbstractResponse $response
+     * @param AbstractResponse $response
      */
-    public function __construct(\Wrr\AbstractResponse $response)
+    public function __construct(AbstractResponse $response)
     {
         $this->response = $response;
     }
 
     /**
-     * @return \Wrr\AbstractResponse
+     * @return AbstractResponse
      */
     public function route()
     {
@@ -43,7 +49,7 @@ class AdminRoute implements \Wrr\RouteInterface {
     }
 
     /**
-     * @param $toMatch
+     * @param Request $request
      * @return bool
      */
     public function match(Request $request)

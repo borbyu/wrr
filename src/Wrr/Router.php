@@ -79,7 +79,7 @@ class Router
 
     /**
      * Process Route
-     * @return AbstractResponse
+     * @return \Wrr\Response\AbstractResponse
      * @throws \RunTimeException
      */
     public function route()
