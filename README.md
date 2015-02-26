@@ -103,7 +103,7 @@ Usage:
 
 # Requirements:
 #### Any flavor of PHP 5.3 or above should do
-#### PHPUnit 3.5+ to execute the test suite (phpunit --version)
+#### PHPUnit 3.7+ to execute the test suite (phpunit --version)
 
 # Author
 ======
