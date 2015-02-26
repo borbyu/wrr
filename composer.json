@@ -1,5 +1,5 @@
 {
-    "name": "woys/wrr",
+    "name": "borbyu/wrr",
     "description": "Wrr is a Request Router",
     "minimum-stability": "stable",
     "authors": [
@@ -12,6 +12,7 @@
         "psr-0": {"Wrr\\": "src/"}
     },
     "require": {
+        "php": ">=5.3.0",
         "phpunit/phpunit": "3.7.*"
     },
     "config": {
