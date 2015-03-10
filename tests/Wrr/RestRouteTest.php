@@ -9,6 +9,8 @@
  */
 namespace Wrr;
 
+use Wrr\Route\RestRoute;
+
 /**
  * Class RestRouteTest
  *

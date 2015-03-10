@@ -33,6 +33,7 @@ class Router
     private $routes = array();
 
     /**
+     * @param string $uriBase
      */
     public function __construct($uriBase = "")
     {

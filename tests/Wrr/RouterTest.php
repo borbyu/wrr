@@ -34,6 +34,7 @@ class RouterTest extends \PHPUnit_Framework_TestCase
     {
         $router = new Router();
         $routeMock = $this->getMockBuilder('Wrr\RouteInterface')->getMock();
+        /** @noinspection PhpParamsInspection */
         $router->registerRoute($routeMock);
     }
 
