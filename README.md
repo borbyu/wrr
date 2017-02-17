@@ -1,11 +1,10 @@
 # Wrr is a Request Router
 ========================
 
-A lightweight, and super fast PHP 5.3+ Request Routing Library and nothing else
-Contributions are welcome.
+A lightweight, and super fast PHP 7 Request Routing Library and nothing else
 
 Usage:
-
+```
     <?php
     require_once __DIR__ . '/vendor/autoload.php';
 
@@ -32,32 +31,32 @@ Usage:
         const ADMIN_PATTERN = 'admin|root';
 
         /**
-         * @var AbstractResponse
+         * @var \Wrr\Response\HttpResponse
          */
         private $response;
 
         /**
-         * @param \Wrr\AbstractResponse $response
+         * @param \Wrr\Response\HttpResponse $response
          */
-        public function __construct(\Wrr\AbstractResponse $response)
+        public function __construct(\Wrr\Response\HttpResponse $response)
         {
             $this->response = $response;
         }
 
         /**
-         * @return \Wrr\AbstractResponse
+         * @return \Wrr\Response\HttpResponse
          */
         public function route()
         {
-            $this->response->addBodyFragment("You are in Admin Land... be careful.");
+            $this->response->setPayload("You are in Admin Land... be careful.");
             return $this->response;
         }
 
         /**
-         * @param $toMatch
+         * @param \Wrr\Request $request
          * @return bool
          */
-        public function match(Request $request)
+        public function match(\Wrr\Request $request)
         {
             $regex = "@" . self::ADMIN_PATTERN . "@";
             return (bool) preg_match($regex, $request->getRelativeUri());
@@ -65,30 +64,24 @@ Usage:
     }
     $router->registerRoute(new AdminRoute());
 
-    /*
-     * making a custom route by extending default route
-     */
-    class HelloWorldRoute extends \Wrr\DefaultRoute {
-        public function __construct() {
-            $fun = function () {
-                ob_start();
-                //$myBlogApp::run();
-                return ob_get_clean();
-            };
-            parent::__construct('^/blog$', $fun);
+    $controller = new \RestExample\ApiController(
+        \Wrr\Request::populateFromGlobals(),
+        new JsonResponse()
+    );
+
+    $jsonResponse = new JsonResponse();
+    $router->registerHttpRoute(
+        'rest',
+        '*',
+        function () use ($controller) {
+            return $controller->dispatch();
         }
-    }
-    $router->registerRoute(new HelloWorldRouteRoute());
+    );
 
     try {
-        $response = $router
-            ->setUriBase('/YourURIBase')
-            ->setRequest(\Wrr\Request::populateFromGlobals())
-            ->route();
+        $response = $router->route();
 
-        /*
-         * send payload to client
-         */
+        /* send payload to client */
         $response
             ->addHeader('X-Meta: Response Built by Wrr!')
             ->deliverPayload();
@@ -100,39 +93,14 @@ Usage:
             ->setResponseCode($e->getCode() ? $e->getCode() : 500)
             ->deliverPayLoad();
     }
+```
 
 # Requirements:
-#### Any flavor of PHP 5.3 or above should do
-#### PHPUnit 3.7+ to execute the test suite (phpunit --version)
+#### PHP 7+
+#### PHPUnit 5.2+ to execute the test suite (phpunit --version)
 
 # Author
 ======
 
-#### Jason Woys aka borbyu <jason@woys.org>
-#### Copyright 2013 Jason Woys (all rights reserved)
-
-
-# License
-=======
-
-The MIT License (MIT)
-
-Copyright (c) 2013 Jason Woys
-
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in
-all copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
-THE SOFTWARE.
+#### borbyu <jason@woys.org>
+#### Copyright 2017 Jason Woys (all rights reserved)

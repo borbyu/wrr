@@ -11,9 +11,7 @@ namespace Wrr;
 
 /**
  * Interface RouteInterface
- *
  * @package Wrr
- * @author borbyu
  */
 interface RouteInterface
 {
@@ -24,7 +22,7 @@ interface RouteInterface
     public function match(Request $request);
 
     /**
-     * @return \Wrr\Response\AbstractResponse
+     * @return \Wrr\Response\ResponseInterface
      */
     public function route();
 }

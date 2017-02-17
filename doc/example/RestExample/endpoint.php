@@ -7,10 +7,10 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
-use Wrr\JsonResponse;
+use Wrr\Response\JsonResponse;
 use Wrr\Router;
-use Wrr\DefaultRoute;
-use Wrr\DefaultResponse;
+use Wrr\Route\DefaultRoute;
+use Wrr\Response\DefaultResponse;
 
 require_once __DIR__ . '/../../../vendor/autoload.php';
 
@@ -21,48 +21,46 @@ $router = new Router();
 $router->registerRoute(
     new DefaultRoute(
         '^/',
-        function () { return "Wrr!... You've been served! "; }
+        function () {
+            return "Wrr!... You've been served! ";
+        }
     )
 ); // catch all
 
-include_once 'RestController.php';
-$controller = new RestController($router, \Wrr\Request::populateFromGlobals());
-$jsonResponse = new JsonResponse();
-$router->registerRoute(
-    new \Wrr\RestRoute(
-        'rest',
-        function () use ($controller) {
-            return $controller->dispatch();
-        },
-        "GET",
-        $jsonResponse
-    )
+include_once 'ApiController.php';
+$controller = new \RestExample\ApiController(
+    \Wrr\Request::populateFromGlobals(),
+    new JsonResponse()
 );
 
+$jsonResponse = new JsonResponse();
+$router->registerHttpRoute(
+    'rest',
+    '*',
+    function () use ($controller) {
+        return $controller->dispatch();
+    }
+);
+
+$router->registerControllerRoute($controller);
+
 $defaultResponse = new DefaultResponse();
-$router->registerRoute(
-    new \Wrr\RestRoute(
-        'rest',
-        function () {
-            return array("Brocks status", "Brock is Cool!");
-        },
-        "POST",
-        $jsonResponse
-    )
+$router->registerHttpRoute(
+    'wrr',
+    'GET',
+    function () {
+        return ["Wrr status", "Wrr is Cool!"];
+    }
 );
 
 try {
+    $headers = ['X-Meta: Response Built by Wrr!'];
     $response = $router
-        ->setRequest(\Wrr\Request::populateFromGlobals())
-        ->route();
-    $response
-        ->addHeader('X-Meta: Response Built by Wrr!')
-        ->deliverPayload();
-
+        ->respond(200, $headers);
 } catch (Exception $e) {
-    $response = new \Wrr\DefaultResponse();
+    $response = new \Wrr\Response\HttpResponse();
     $response
-        ->addBodyFragment($e->getMessage())
+        ->setPayload($e->getMessage())
         ->setResponseCode($e->getCode() ? $e->getCode() : 500)
-        ->deliverPayLoad();
+        ->deliverPayload();
 }

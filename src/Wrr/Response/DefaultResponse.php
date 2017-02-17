@@ -11,16 +11,14 @@ namespace Wrr\Response;
 
 /**
  * Class DefaultResponse
- *
- * @package Wrr
- * @author  borbyu
+ * @package Wrr\Response
  */
-class DefaultResponse extends AbstractResponse
+class DefaultResponse extends HttpResponse
 {
     /**
      * @return $this
      */
-    public function deliverPayLoad()
+    public function deliverPayload()
     {
         return parent::deliverPayload();
     }

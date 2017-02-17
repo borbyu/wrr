@@ -10,16 +10,15 @@
 namespace Wrr\Route;
 
 use Wrr\Request;
-use Wrr\Response\AbstractResponse;
+use Wrr\Response\HttpResponse;
+use Wrr\Response\ResponseInterface;
 use Wrr\RouteInterface;
 
 /**
- * Class RestRoute
- *
- * @package Wrr
- * @author  borbyu
+ * Class HttpRoute
+ * @package Wrr\Route
  */
-class RestRoute implements RouteInterface
+class HttpRoute implements RouteInterface
 {
 
     /**
@@ -35,7 +34,7 @@ class RestRoute implements RouteInterface
      */
     private $method;
     /**
-     * @var AbstractResponse
+     * @var ResponseInterface
      */
     private $response;
 
@@ -43,39 +42,37 @@ class RestRoute implements RouteInterface
      * @param string $pattern
      * @param \Closure $function
      * @param string $method
-     * @param AbstractResponse $response
      */
-    public function __construct (
+    public function __construct(
         $pattern,
         \Closure $function,
-        $method,
-        AbstractResponse $response
+        $method
     ) {
         $this->pattern = $pattern;
         $this->function = $function;
         $this->method = $method;
+        $this->response = new HttpResponse();
+    }
+
+    /**
+     * @param ResponseInterface $response
+     */
+    public function setResponse(ResponseInterface $response)
+    {
         $this->response = $response;
     }
 
     /**
      * Do the routing and call the closure
      *
-     * @return AbstractResponse
+     * @return ResponseInterface
      * @throws \Exception
      */
     public function route()
     {
-        if (is_callable($this->function)) {
-            $fun = $this->function;
-            $result = $fun();
-            if (is_scalar($result)) {
-                $this->response->addBodyFragment($result);
-            } elseif (method_exists($this->response, 'setData')) {
-                $this->response->setData($result);
-            } else {
-                throw new \Exception('No Result to Route', 500);
-            }
-        }
+        $fun = $this->function;
+        $result = $fun($this->response);
+        $this->response->setPayload($result);
         return $this->response;
     }
 
@@ -94,9 +91,10 @@ class RestRoute implements RouteInterface
      * @param string $method
      * @return bool
      */
-    private function matchesPattern($toMatch, $method)
+    protected function matchesPattern($toMatch, $method = "*")
     {
         $regex = "@" . $this->pattern . "@";
-        return (bool) preg_match($regex, $toMatch) && $method == $this->method;
+        return preg_match($regex, $toMatch)
+            && ($method == '*' || $method == $this->method);
     }
 }

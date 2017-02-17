@@ -11,9 +11,7 @@ namespace Wrr;
 
 /**
  * Class Request
- *
  * @package Wrr
- * @author  borbyu
  */
 class Request
 {
@@ -53,12 +51,12 @@ class Request
     /**
      * @var array
      */
-    private $requestVars = array (
-        'get' => array(),
-        'post' => array(),
-        'cookie' => array(),
-        'files' => array()
-    );
+    private $requestVars = [
+        'get' => [],
+        'post' => [],
+        'cookie' => [],
+        'files' => []
+    ];
 
     /**
      * @var string
@@ -68,7 +66,7 @@ class Request
     /**
      * @var array
      */
-    private $requestHeaders = array();
+    private $requestHeaders = [];
 
     /**
      * @param string $requestUri
@@ -102,7 +100,7 @@ class Request
             $request->setRequestTime($_SERVER['REQUEST_TIME']);
             $request->setRequestEndPoint($_SERVER['SCRIPT_NAME']);
         }
-        $supersSet = array('get'=> $_GET, 'post' => $_POST, 'cookie' => $_COOKIE, 'files' => $_FILES);
+        $supersSet = ['get'=> $_GET, 'post' => $_POST, 'cookie' => $_COOKIE, 'files' => $_FILES];
         foreach ($supersSet as $container => $supers) {
             if (isset($supers) && is_array($supers)) {
                 foreach ($supers as $key => $value) {
@@ -122,7 +120,7 @@ class Request
     public function setRequestVar($container, $key, $value)
     {
         if (!isset($this->requestVars[$container])) {
-            $this->requestVars[$container] = array();
+            $this->requestVars[$container] = [];
         }
         $this->requestVars[$container][$key] = $value;
         return $this;
@@ -179,7 +177,7 @@ class Request
     /**
      * @return mixed
      */
-    public function getRequestTime ()
+    public function getRequestTime()
     {
         return $this->requestTime;
     }
@@ -187,7 +185,7 @@ class Request
     /**
      * @return mixed
      */
-    public function getRequestUri ()
+    public function getRequestUri()
     {
         return $this->requestUri;
     }
@@ -195,7 +193,7 @@ class Request
     /**
      * @return mixed
      */
-    public function getRequestMethod ()
+    public function getRequestMethod()
     {
         return $this->requestMethod;
     }
@@ -203,7 +201,7 @@ class Request
     /**
      * @return mixed
      */
-    public function getRemoteAddr ()
+    public function getRemoteAddr()
     {
         return $this->remoteAddr;
     }
@@ -211,7 +209,7 @@ class Request
     /**
      * @return mixed
      */
-    public function getQueryString ()
+    public function getQueryString()
     {
         return $this->queryString;
     }
@@ -219,7 +217,7 @@ class Request
     /**
      * @return mixed
      */
-    public function getRequestEndPoint ()
+    public function getRequestEndPoint()
     {
         return $this->requestEndPoint;
     }
@@ -227,7 +225,7 @@ class Request
     /**
      * @return mixed
      */
-    public function getUserAgent ()
+    public function getUserAgent()
     {
         return $this->userAgent;
     }
@@ -235,7 +233,7 @@ class Request
     /**
      * @param $requestTime
      */
-    public function setRequestTime ($requestTime)
+    public function setRequestTime($requestTime)
     {
         $this->requestTime = $requestTime;
     }
@@ -243,7 +241,7 @@ class Request
     /**
      * @param $requestUri
      */
-    public function setRequestUri ($requestUri)
+    public function setRequestUri($requestUri)
     {
         $this->requestUri = $requestUri;
     }
@@ -251,7 +249,7 @@ class Request
     /**
      * @param $requestMethod
      */
-    public function setRequestMethod ($requestMethod)
+    public function setRequestMethod($requestMethod)
     {
         $this->requestMethod = $requestMethod;
     }
@@ -259,7 +257,7 @@ class Request
     /**
      * @param $remoteAddr
      */
-    public function setRemoteAddr ($remoteAddr)
+    public function setRemoteAddr($remoteAddr)
     {
         $this->remoteAddr = $remoteAddr;
     }
@@ -267,7 +265,7 @@ class Request
     /**
      * @param $queryString
      */
-    public function setQueryString ($queryString)
+    public function setQueryString($queryString)
     {
         $this->queryString = $queryString;
     }
@@ -275,7 +273,7 @@ class Request
     /**
      * @param $requestEndPoint
      */
-    public function setRequestEndPoint ($requestEndPoint)
+    public function setRequestEndPoint($requestEndPoint)
     {
         $this->requestEndPoint = $requestEndPoint;
     }
@@ -283,7 +281,7 @@ class Request
     /**
      * @param $userAgent
      */
-    public function setUserAgent ($userAgent)
+    public function setUserAgent($userAgent)
     {
         $this->userAgent = $userAgent;
     }

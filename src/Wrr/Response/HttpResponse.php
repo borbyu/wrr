@@ -10,22 +10,20 @@
 namespace Wrr\Response;
 
 /**
- * Class AbstractResponse
- *
- * @package Wrr
- * @author  borbyu
+ * Class HttpResponse
+ * @package Wrr\Response
  */
-abstract class AbstractResponse
+class HttpResponse implements ResponseInterface
 {
     /**
      * @var array
      */
-    private $headers = array();
+    private $headers = [];
 
     /**
-     * @var array
+     * @var string
      */
-    private $body = array();
+    private $payload = '';
 
     /**
      * @var int
@@ -33,22 +31,26 @@ abstract class AbstractResponse
     private $responseCode = 200;
 
     /**
-     * @param $header
+     * @param array|string $header
      * @return $this
      */
     public function addHeader($header)
     {
-        $this->headers[] = $header;
+        if (is_array($header)) {
+            array_merge($this->headers, $header);
+        } else {
+            $this->headers[] = $header;
+        }
         return $this;
     }
 
     /**
-     * @param $bodyFragment
+     * @param $payload
      * @return $this
      */
-    public function addBodyFragment($bodyFragment)
+    public function setPayload($payload)
     {
-        $this->body [] = $bodyFragment;
+        $this->payload = $payload;
         return $this;
     }
 
@@ -58,15 +60,13 @@ abstract class AbstractResponse
      *
      * @return $this
      */
-    public function deliverPayLoad()
+    public function deliverPayload()
     {
         header($_SERVER["SERVER_PROTOCOL"] . " " . $this->responseCode);
         foreach ($this->headers as $header) {
             header($header);
         }
-        foreach ($this->body as $bodyFragments) {
-            echo $bodyFragments;
-        }
+        echo $this->payload;
         return $this;
     }
 

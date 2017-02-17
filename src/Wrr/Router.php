@@ -9,11 +9,12 @@
  */
 namespace Wrr;
 
+use Wrr\Response\ResponseInterface;
+use Wrr\Route\HttpRoute;
+
 /**
  * Class Router
- *
  * @package Wrr
- * @author  borbyu
  */
 class Router
 {
@@ -30,14 +31,14 @@ class Router
     /**
      * @var array
      */
-    private $routes = array();
+    private $routes = [];
 
     /**
-     * @param string $uriBase
+     * @param Request $request
      */
-    public function __construct($uriBase = "")
+    public function __construct(Request $request = null)
     {
-        $this->uriBase = $uriBase;
+        $this->request = $request ?: Request::populateFromGlobals();
     }
 
     /**
@@ -80,7 +81,7 @@ class Router
 
     /**
      * Process Route
-     * @return \Wrr\Response\AbstractResponse
+     * @return \Wrr\Response\ResponseInterface
      * @throws \RunTimeException
      */
     public function route()
@@ -103,5 +104,46 @@ class Router
     public function getRequest()
     {
         return $this->request;
+    }
+
+    /**
+     * @param string $pattern
+     * @param string $method
+     * @param \Closure $callable
+     * @return HttpRoute
+     */
+    public function registerHttpRoute($pattern, $method, \Closure $callable)
+    {
+        return $this->registerRoute(
+            new HttpRoute($pattern, $callable, $method)
+        );
+    }
+
+    /**
+     * @param Controller $controller
+     * @return HttpRoute
+     */
+    public function registerControllerRoute(Controller $controller)
+    {
+        return $this->registerHttpRoute(
+            $controller->getPattern(),
+            $controller->getMethod(),
+            function () use ($controller) {
+                return $controller->dispatch();
+            }
+        );
+    }
+
+    /**
+     * @param null|int $responseCode
+     * @param array $headers
+     * @return ResponseInterface
+     */
+    public function respond($responseCode = null, array $headers = [])
+    {
+        $response = $this->route();
+        return $response->setResponseCode($responseCode)
+            ->addHeader($headers)
+            ->deliverPayload();
     }
 }

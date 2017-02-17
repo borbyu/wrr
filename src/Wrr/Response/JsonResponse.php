@@ -1,4 +1,4 @@
-<?php 
+<?php
 /**
  * This file is part of the Wrr package.
  *
@@ -11,23 +11,23 @@ namespace Wrr\Response;
 
 /**
  * Class JsonResponse
- *
- * @package Wrr
- * @author  borbyu
+ * @package Wrr\Response
  */
-class JsonResponse extends AbstractResponse
+class JsonResponse extends HttpResponse
 {
     /**
      * @var string
      */
-    private $json;
+    private $json = '';
 
     /**
      * @param $data
+     * @return JsonResponse
      */
     public function setData($data)
     {
         $this->json = json_encode($data);
+        return $this;
     }
 
     /**
@@ -42,14 +42,10 @@ class JsonResponse extends AbstractResponse
      * @return $this
      * @throws \Exception
      */
-    public function deliverPayLoad()
+    public function deliverPayload()
     {
         $this->addHeader('Content-Type: application/json');
-        if ($this->json) {
-            $this->addBodyFragment($this->json);
-        } else {
-            throw new \Exception("No JSON", 500);
-        }
-        return parent::deliverPayLoad();
+        $this->setPayload($this->json);
+        return parent::deliverPayload();
     }
 }

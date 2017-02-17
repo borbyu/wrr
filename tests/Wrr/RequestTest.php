@@ -10,10 +10,8 @@
 namespace Wrr;
 
 /**
- * Class RouterTest
- *
+ * Class RequestTest
  * @package Wrr
- * @author  borbyu
  */
 class RequestTest extends \PHPUnit_Framework_TestCase
 {
@@ -22,7 +20,7 @@ class RequestTest extends \PHPUnit_Framework_TestCase
      */
     private function mockServerGlobal()
     {
-        $_SERVER = array(
+        $_SERVER = [
             "HTTP_USER_AGENT" => "test agent",
             "HTTP_HOST" => "23.239.1.38",
             "SERVER_NAME" => "23.239.1.38",
@@ -36,7 +34,7 @@ class RequestTest extends \PHPUnit_Framework_TestCase
             "SCRIPT_NAME" => "/cms/public/index.php",
             "PHP_SELF" => "/cms/public/index.php",
             "REQUEST_TIME" => "1385966801"
-        );
+        ];
     }
 
     /**
@@ -48,7 +46,7 @@ class RequestTest extends \PHPUnit_Framework_TestCase
         $this->assertTrue($request instanceof Request);
 
         $request = new Request('/test');
-        $this->assertTrue($request->getRequestUri() == '/test' );
+        $this->assertTrue($request->getRequestUri() == '/test');
     }
 
     /**
@@ -57,10 +55,10 @@ class RequestTest extends \PHPUnit_Framework_TestCase
     public function testPopulateFromGlobals()
     {
         $this->mockServerGlobal();
-        $_GET = array(1=>1);
-        $_POST = array(5=>2);
-        $_COOKIE = array(2=>3);
-        $_FILES = array(9=>4);
+        $_GET = [1=>1];
+        $_POST = [5=>2];
+        $_COOKIE = [2=>3];
+        $_FILES = [9=>4];
 
         $request = Request::populateFromGlobals();
         $this->assertTrue(is_object($request));
@@ -82,7 +80,7 @@ class RequestTest extends \PHPUnit_Framework_TestCase
         $vars = $request->getRequestVars();
         $this->assertTrue($vars['baz']['abc'] == 'def');
 
-        $request->setRequestVars(array('a' => 'b', 'c'=> 'd'));
+        $request->setRequestVars(['a' => 'b', 'c'=> 'd']);
         $vars = $request->getRequestVars();
         $this->assertTrue($vars['a'] == 'b');
         $this->assertTrue($vars['c'] == 'd');
@@ -173,8 +171,8 @@ class RequestTest extends \PHPUnit_Framework_TestCase
     {
         $this->mockServerGlobal();
         $request = Request::populateFromGlobals();
-        $request->setRequestHeaders(array('array!'));
-        $this->assertTrue($request->getRequestHeaders() == array('array!'));
+        $request->setRequestHeaders(['array!']);
+        $this->assertTrue($request->getRequestHeaders() == ['array!']);
     }
 
     /**
