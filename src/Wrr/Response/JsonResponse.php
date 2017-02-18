@@ -31,6 +31,16 @@ class JsonResponse extends HttpResponse
     }
 
     /**
+     * @param string $payload
+     * @return $this
+     */
+    public function setPayload($payload)
+    {
+        $this->setData($payload);
+        return parent::setPayload($this->json);
+    }
+
+    /**
      * @return mixed
      */
     public function decodeData()
@@ -45,7 +55,6 @@ class JsonResponse extends HttpResponse
     public function deliverPayload()
     {
         $this->addHeader('Content-Type: application/json');
-        $this->setPayload($this->json);
         return parent::deliverPayload();
     }
 }
