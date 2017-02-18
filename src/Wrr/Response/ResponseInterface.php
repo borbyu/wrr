@@ -19,23 +19,28 @@ interface ResponseInterface
     /**
      * @return ResponseInterface
      */
-    public function deliverPayload();
+    public function deliverPayload() : ResponseInterface;
 
     /**
      * @param string $payload
      * @return ResponseInterface
      */
-    public function setPayload($payload);
+    public function setPayload($payload) : ResponseInterface;
 
     /**
      * @param $header
      * @return ResponseInterface
      */
-    public function addHeader($header);
+    public function addHeader($header) : ResponseInterface;
 
     /**
      * @param int $code
      * @return ResponseInterface
      */
-    public function setResponseCode($code);
+    public function setResponseCode(int $code) : ResponseInterface;
+
+    /**
+     * @return int
+     */
+    public function getResponseCode() : int;
 }

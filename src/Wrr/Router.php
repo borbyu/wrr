@@ -43,9 +43,9 @@ class Router
 
     /**
      * @param RouteInterface $route
-     * @return $this
+     * @return Router
      */
-    public function registerRoute(RouteInterface $route)
+    public function registerRoute(RouteInterface $route) : Router
     {
         array_unshift($this->routes, $route);
         return $this;
@@ -53,9 +53,9 @@ class Router
 
     /**
      * @param Request $request
-     * @return $this
+     * @return Router
      */
-    public function setRequest(Request $request)
+    public function setRequest(Request $request) : Router
     {
         $this->request = $request;
         return $this;
@@ -63,9 +63,9 @@ class Router
 
     /**
      * @param string $uriBase
-     * @return $this
+     * @return Router
      */
-    public function setUriBase($uriBase)
+    public function setUriBase($uriBase) : Router
     {
         $this->uriBase = $uriBase;
         return $this;
@@ -74,17 +74,17 @@ class Router
     /**
      * @return string
      */
-    public function getUriBase()
+    public function getUriBase() : string
     {
         return $this->uriBase;
     }
 
     /**
      * Process Route
-     * @return \Wrr\Response\ResponseInterface
+     * @return ResponseInterface
      * @throws \RunTimeException
      */
-    public function route()
+    public function route() : ResponseInterface
     {
         if ($this->getUriBase()) {
             $this->request->setUriBase($this->getUriBase());
@@ -92,7 +92,7 @@ class Router
         foreach ($this->routes as $route) {
             /* @var \Wrr\RouteInterface $route */
             if ($route->match($this->request)) {
-                return $route->route();
+                return $route->route()->addHeader('X-Meta: Response Built by Wrr!');
             }
         }
         throw new \RuntimeException('Resource Not Found', 404);
@@ -101,7 +101,7 @@ class Router
     /**
      * @return Request
      */
-    public function getRequest()
+    public function getRequest() : Request
     {
         return $this->request;
     }
@@ -112,7 +112,7 @@ class Router
      * @param \Closure $callable
      * @return HttpRoute
      */
-    public function registerHttpRoute($pattern, $method, \Closure $callable)
+    public function registerHttpRoute($pattern, $method, \Closure $callable) : HttpRoute
     {
         return $this->registerRoute(
             new HttpRoute($pattern, $callable, $method)
@@ -123,7 +123,7 @@ class Router
      * @param Controller $controller
      * @return HttpRoute
      */
-    public function registerControllerRoute(Controller $controller)
+    public function registerControllerRoute(Controller $controller) : HttpRoute
     {
         return $this->registerHttpRoute(
             $controller->getPattern(),
@@ -139,10 +139,10 @@ class Router
      * @param array $headers
      * @return ResponseInterface
      */
-    public function respond($responseCode = null, array $headers = [])
+    public function respond($responseCode = null, array $headers = []) : ResponseInterface
     {
         $response = $this->route();
-        return $response->setResponseCode($responseCode)
+        return $response->setResponseCode($responseCode ?: $response->getResponseCode())
             ->addHeader($headers)
             ->deliverPayload();
     }

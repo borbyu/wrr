@@ -44,9 +44,9 @@ class HttpRoute implements RouteInterface
      * @param string $method
      */
     public function __construct(
-        $pattern,
+        string $pattern,
         \Closure $function,
-        $method
+        string $method = 'GET'
     ) {
         $this->pattern = $pattern;
         $this->function = $function;
@@ -56,9 +56,9 @@ class HttpRoute implements RouteInterface
 
     /**
      * @param ResponseInterface $response
-     * @return $this
+     * @return HttpRoute
      */
-    public function setResponse(ResponseInterface $response)
+    public function setResponse(ResponseInterface $response) : HttpRoute
     {
         $this->response = $response;
         return $this;
@@ -70,7 +70,7 @@ class HttpRoute implements RouteInterface
      * @return ResponseInterface
      * @throws \Exception
      */
-    public function route()
+    public function route() : ResponseInterface
     {
         $fun = $this->function;
         $result = $fun($this->response);
@@ -82,7 +82,7 @@ class HttpRoute implements RouteInterface
      * @param Request $request
      * @return bool
      */
-    public function match(Request $request)
+    public function match(Request $request) : bool
     {
         $pattern = $request->getRelativeUri();
         return $this->matchesPattern($pattern, $request->getRequestMethod());
@@ -93,7 +93,7 @@ class HttpRoute implements RouteInterface
      * @param string $method
      * @return bool
      */
-    protected function matchesPattern($toMatch, $method = "*")
+    protected function matchesPattern($toMatch, $method = "*") : bool
     {
         $regex = "@" . $this->pattern . "@";
         return preg_match($regex, $toMatch)

@@ -38,12 +38,15 @@ abstract class Controller
         $this->response = $response;
     }
 
-    abstract public function dispatch();
+    /**
+     * @return ResponseInterface
+     */
+    abstract public function dispatch() : ResponseInterface;
 
     /**
      * @return Request
      */
-    public function getRequest()
+    public function getRequest() : Request
     {
         return $this->request;
     }
@@ -51,7 +54,7 @@ abstract class Controller
     /**
      * @return ResponseInterface
      */
-    protected function getResponse()
+    protected function getResponse() : ResponseInterface
     {
         return $this->response;
     }

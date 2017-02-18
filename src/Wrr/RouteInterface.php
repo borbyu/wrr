@@ -9,6 +9,8 @@
  */
 namespace Wrr;
 
+use Wrr\Response\ResponseInterface;
+
 /**
  * Interface RouteInterface
  * @package Wrr
@@ -17,12 +19,12 @@ interface RouteInterface
 {
     /**
      * @param Request $request
-     * @return mixed
+     * @return bool
      */
-    public function match(Request $request);
+    public function match(Request $request) : bool;
 
     /**
-     * @return \Wrr\Response\ResponseInterface
+     * @return ResponseInterface
      */
-    public function route();
+    public function route() : ResponseInterface;
 }

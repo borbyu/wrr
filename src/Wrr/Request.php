@@ -16,33 +16,40 @@ namespace Wrr;
 class Request
 {
     /**
-     * @var
+     * @var string
      */
     private $requestTime;
+
     /**
-     * @var
+     * @var string
      */
     private $requestUri;
+
     /**
-     * @var
+     * @var string
      */
     private $requestMethod;
+
     /**
-     * @var
+     * @var string
      */
     private $remoteAddr;
+
     /**
-     * @var
+     * @var string
      */
     private $queryString;
+
     /**
-     * @var
+     * @var string
      */
     private $requestEndPoint;
+
     /**
      * @var string
      */
     private $userAgent;
+
     /**
      * @var string
      */
@@ -84,7 +91,7 @@ class Request
      *
      * @return Request
      */
-    public static function populateFromGlobals()
+    public static function populateFromGlobals() : Request
     {
         $request = new Request();
         if (function_exists('apache_request_headers')) {
@@ -115,9 +122,9 @@ class Request
      * @param string $container
      * @param string $key
      * @param mixed $value
-     * @return $this
+     * @return Request
      */
-    public function setRequestVar($container, $key, $value)
+    public function setRequestVar($container, $key, $value) : Request
     {
         if (!isset($this->requestVars[$container])) {
             $this->requestVars[$container] = [];
@@ -153,7 +160,7 @@ class Request
     /**
      * @return array
      */
-    public function getRequestHeaders()
+    public function getRequestHeaders() : array
     {
         return $this->requestHeaders;
     }
@@ -169,7 +176,7 @@ class Request
     /**
      * @return array
      */
-    public function getRequestVars()
+    public function getRequestVars() : array
     {
         return $this->requestVars;
     }

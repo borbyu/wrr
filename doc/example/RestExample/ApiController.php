@@ -13,6 +13,7 @@ namespace RestExample;
 use Wrr\Controller;
 use Wrr\Request;
 use Wrr\Response\JsonResponse;
+use Wrr\Response\ResponseInterface;
 
 /**
  * Class ApiController
@@ -30,7 +31,7 @@ class ApiController extends Controller
     }
 
     /**
-     * @return array
+     * @return ResponseInterface
      */
     public function dispatch()
     {
@@ -68,7 +69,7 @@ class ApiController extends Controller
     {
         return $this->getResponse()
             ->setResponseCode($code)
-            ->setData($data);
+            ->setPayload($data);
     }
 
     /**
