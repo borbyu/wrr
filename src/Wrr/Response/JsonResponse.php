@@ -32,9 +32,9 @@ class JsonResponse extends HttpResponse
 
     /**
      * @param string $payload
-     * @return $this
+     * @return ResponseInterface
      */
-    public function setPayload($payload)
+    public function setPayload($payload) : ResponseInterface
     {
         $this->setData($payload);
         return parent::setPayload($this->json);
@@ -49,10 +49,10 @@ class JsonResponse extends HttpResponse
     }
 
     /**
-     * @return $this
+     * @return ResponseInterface
      * @throws \Exception
      */
-    public function deliverPayload()
+    public function deliverPayload() : ResponseInterface
     {
         $this->addHeader('Content-Type: application/json');
         return parent::deliverPayload();

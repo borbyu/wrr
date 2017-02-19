@@ -32,9 +32,9 @@ class HttpResponse implements ResponseInterface
 
     /**
      * @param array|string $header
-     * @return HttpResponse
+     * @return ResponseInterface
      */
-    public function addHeader($header) : HttpResponse
+    public function addHeader($header) : ResponseInterface
     {
         if (is_array($header)) {
             array_merge($this->headers, $header);
@@ -46,9 +46,9 @@ class HttpResponse implements ResponseInterface
 
     /**
      * @param $payload
-     * @return HttpResponse
+     * @return ResponseInterface
      */
-    public function setPayload($payload) : HttpResponse
+    public function setPayload($payload) : ResponseInterface
     {
         $this->payload = $payload;
         return $this;
@@ -58,9 +58,9 @@ class HttpResponse implements ResponseInterface
      * Append headers and body together and
      * deliver the payload.
      *
-     * @return HttpResponse
+     * @return ResponseInterface
      */
-    public function deliverPayload() : HttpResponse
+    public function deliverPayload() : ResponseInterface
     {
         header($_SERVER["SERVER_PROTOCOL"] . " " . $this->responseCode);
         foreach ($this->headers as $header) {
@@ -72,9 +72,9 @@ class HttpResponse implements ResponseInterface
 
     /**
      * @param int $code
-     * @return $this
+     * @return ResponseInterface
      */
-    public function setResponseCode(int $code)
+    public function setResponseCode(int $code) : ResponseInterface
     {
         $this->responseCode = $code ?: 200;
         return $this;
