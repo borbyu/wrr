@@ -16,9 +16,9 @@ namespace Wrr\Response;
 class DefaultResponse extends HttpResponse
 {
     /**
-     * @return $this
+     * @return ResponseInterface
      */
-    public function deliverPayload()
+    public function deliverPayload() : ResponseInterface
     {
         return parent::deliverPayload();
     }
