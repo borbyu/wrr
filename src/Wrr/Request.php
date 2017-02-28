@@ -59,6 +59,7 @@ class Request
      * @var array
      */
     private $requestVars = [
+        'json' => [],
         'get' => [],
         'post' => [],
         'cookie' => [],
@@ -94,10 +95,20 @@ class Request
     public static function populateFromGlobals() : Request
     {
         $request = new Request();
-        if (function_exists('apache_request_headers')) {
-            $request->setRequestHeaders(apache_request_headers());
+        if (function_exists('getallheaders')) {
+            $headers = getallheaders();
+            $request->setRequestHeaders($headers);
+        } else {
+            $headers = [];
         }
-        $request->setRequestBody(file_get_contents('php://input'));
+        $body = file_get_contents('php://input');
+        $request->setRequestBody($body);
+        if (in_array('Content-Type: application/json', $headers)) {
+            $data = json_decode($body, true);
+            foreach ($data as $key => $item) {
+                $request->setRequestVar('json', $key, $item);
+            }
+        }
         if (isset($_SERVER)) {
             $request->setUserAgent($_SERVER['HTTP_USER_AGENT']);
             $request->setQueryString($_SERVER['QUERY_STRING']);
@@ -115,6 +126,7 @@ class Request
                 }
             }
         }
+
         return $request;
     }
 
@@ -179,6 +191,28 @@ class Request
     public function getRequestVars() : array
     {
         return $this->requestVars;
+    }
+
+    /**
+     * @param string $key
+     * @param null|string $container
+     * @return mixed
+     */
+    public function getRequestVar($key, $container = null)
+    {
+        if (is_null($container)) {
+            foreach ($this->requestVars as $container) {
+                if (isset($container[$key])) {
+                    return $container[$key];
+                }
+            }
+            return null;
+        } else {
+            if (isset($this->requestVars[$container][$key])) {
+                return $this->requestVars[$container][$key];
+            }
+            return null;
+        }
     }
 
     /**

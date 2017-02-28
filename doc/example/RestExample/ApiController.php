@@ -69,7 +69,8 @@ class ApiController extends Controller
     {
         return $this->getResponse()
             ->setResponseCode($code)
-            ->setPayload($data);
+            ->setPayload($data)
+            ->deliverPayload();
     }
 
     /**

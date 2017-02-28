@@ -34,6 +34,10 @@ class HttpRoute implements RouteInterface
      */
     private $method;
     /**
+     * @var Request
+     */
+    private $request;
+    /**
      * @var ResponseInterface
      */
     private $response;
@@ -42,15 +46,18 @@ class HttpRoute implements RouteInterface
      * @param string $pattern
      * @param \Closure $function
      * @param string $method
+     * @param Request $request
      */
     public function __construct(
         string $pattern,
         \Closure $function,
-        string $method = 'GET'
+        string $method = 'GET',
+        Request $request = null
     ) {
         $this->pattern = $pattern;
         $this->function = $function;
         $this->method = $method;
+        $this->request = $request ?: Request::populateFromGlobals();
         $this->response = new HttpResponse();
     }
 
@@ -73,7 +80,7 @@ class HttpRoute implements RouteInterface
     public function route() : ResponseInterface
     {
         $fun = $this->function;
-        $result = $fun($this->response);
+        $result = $fun($this->request, $this->response);
         $this->response->setPayload($result);
         return $this->response;
     }
