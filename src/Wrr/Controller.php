@@ -60,11 +60,11 @@ abstract class Controller
     }
 
     /**
-     * @return string|null
+     * @return string
      */
     public function getPattern()
     {
-        return null;
+        return '';
     }
 
     /**

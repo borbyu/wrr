@@ -10,6 +10,7 @@
 namespace Wrr\Route;
 
 use Wrr\Response\DefaultResponse;
+use Wrr\Response\ResponseInterface;
 
 /**
  * Class DefaultRoute
@@ -36,9 +37,9 @@ class DefaultRoute extends HttpRoute
     /**
      * Do the routing and call the closure
      *
-     * @return DefaultResponse
+     * @return ResponseInterface
      */
-    public function route()
+    public function route() : ResponseInterface
     {
         return parent::route();
     }

@@ -40,6 +40,11 @@ interface ResponseInterface
     public function setResponseCode(int $code) : ResponseInterface;
 
     /**
+     * @return string
+     */
+    public function getPayload() : string;
+
+    /**
      * @return int
      */
     public function getResponseCode() : int;

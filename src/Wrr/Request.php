@@ -59,7 +59,7 @@ class Request
      * @var array
      */
     private $requestVars = [
-        'json' => [],
+        'body' => [],
         'get' => [],
         'post' => [],
         'cookie' => [],
@@ -103,20 +103,30 @@ class Request
         }
         $body = file_get_contents('php://input');
         $request->setRequestBody($body);
-        if (in_array('Content-Type: application/json', $headers)) {
-            $data = json_decode($body, true);
-            foreach ($data as $key => $item) {
-                $request->setRequestVar('json', $key, $item);
-            }
+
+        $jsonData = json_decode($body, true);
+        parse_str($body, $urlParsedData);
+
+        $bodyData = $jsonData ?: ($urlParsedData ?: []);
+        foreach ($bodyData as $key => $item) {
+            $request->setRequestVar('body', $key, $item);
         }
+
+        $exists = function ($key) {
+            if (isset($_SERVER[$key])) {
+                return $_SERVER[$key];
+            } else {
+                return '';
+            }
+        };
         if (isset($_SERVER)) {
-            $request->setUserAgent($_SERVER['HTTP_USER_AGENT']);
-            $request->setQueryString($_SERVER['QUERY_STRING']);
-            $request->setRemoteAddr($_SERVER['REMOTE_ADDR']);
-            $request->setRequestMethod($_SERVER['REQUEST_METHOD']);
-            $request->setRequestUri($_SERVER['REQUEST_URI']);
-            $request->setRequestTime($_SERVER['REQUEST_TIME']);
-            $request->setRequestEndPoint($_SERVER['SCRIPT_NAME']);
+            $request->setUserAgent($exists('HTTP_USER_AGENT'));
+            $request->setQueryString($exists('QUERY_STRING'));
+            $request->setRemoteAddr($exists('REMOTE_ADDR'));
+            $request->setRequestMethod($exists('REQUEST_METHOD'));
+            $request->setRequestUri($exists('REQUEST_URI'));
+            $request->setRequestTime($exists('REQUEST_TIME'));
+            $request->setRequestEndPoint($exists('SCRIPT_NAME'));
         }
         $supersSet = ['get'=> $_GET, 'post' => $_POST, 'cookie' => $_COOKIE, 'files' => $_FILES];
         foreach ($supersSet as $container => $supers) {
@@ -191,6 +201,17 @@ class Request
     public function getRequestVars() : array
     {
         return $this->requestVars;
+    }
+
+    /**
+     * @param int $index
+     * @return mixed
+     */
+    public function getUriVar($index)
+    {
+        $uriFragments = explode('/', $this->getRelativeUri());
+        array_shift($uriFragments);
+        return isset($uriFragments[$index]) ? $uriFragments[$index] : null;
     }
 
     /**

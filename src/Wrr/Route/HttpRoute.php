@@ -46,19 +46,41 @@ class HttpRoute implements RouteInterface
      * @param string $pattern
      * @param \Closure $function
      * @param string $method
-     * @param Request $request
      */
     public function __construct(
         string $pattern,
         \Closure $function,
-        string $method = 'GET',
-        Request $request = null
+        string $method = 'GET'
     ) {
         $this->pattern = $pattern;
         $this->function = $function;
         $this->method = $method;
-        $this->request = $request ?: Request::populateFromGlobals();
-        $this->response = new HttpResponse();
+    }
+
+    /**
+     * @param Request $request
+     */
+    public function setRequest(Request $request)
+    {
+        $this->request = $request;
+    }
+
+    /**
+     * @return HttpResponse
+     */
+    public function getResponse()
+    {
+        $this->response = $this->response ?: new HttpResponse();
+        return $this->response;
+    }
+
+    /**
+     * @return Request
+     */
+    public function getRequest()
+    {
+        $this->request = $this->request ?: Request::populateFromGlobals();
+        return $this->request;
     }
 
     /**
@@ -80,9 +102,9 @@ class HttpRoute implements RouteInterface
     public function route() : ResponseInterface
     {
         $fun = $this->function;
-        $result = $fun($this->request, $this->response);
-        $this->response->setPayload($result);
-        return $this->response;
+        $result = $fun($this->getRequest(), $this->getResponse());
+        $this->getResponse()->setPayload($result);
+        return $this->getResponse();
     }
 
     /**
@@ -104,6 +126,7 @@ class HttpRoute implements RouteInterface
     {
         $regex = "@" . $this->pattern . "@";
         return preg_match($regex, $toMatch)
-            && ($method == '*' || $method == $this->method);
+        && ($this->method == '*' || $method == $this->method)
+        && (substr_count($toMatch, '/')) === (substr_count($this->pattern, '/'));
     }
 }

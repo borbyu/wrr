@@ -52,6 +52,30 @@ class Router
     }
 
     /**
+     * @param array $routes
+     * @param ResponseInterface $response
+     * @return Router
+     */
+    public function registerRoutes(array $routes, ResponseInterface $response) : Router
+    {
+        foreach ($routes as $route) {
+            if ($route instanceof RouteInterface) {
+                $route->setResponse($response);
+                $this->registerRoute($route);
+            }
+        }
+        return $this;
+    }
+
+    /**
+     * @return array
+     */
+    public function dumpRoutes()
+    {
+        return $this->routes;
+    }
+
+    /**
      * @param Request $request
      * @return Router
      */
@@ -110,9 +134,9 @@ class Router
      * @param string $pattern
      * @param string $method
      * @param \Closure $callable
-     * @return HttpRoute
+     * @return Router
      */
-    public function registerHttpRoute($pattern, $method, \Closure $callable) : HttpRoute
+    public function registerHttpRoute($pattern, $method, \Closure $callable) : Router
     {
         return $this->registerRoute(
             new HttpRoute($pattern, $callable, $method)
@@ -120,16 +144,36 @@ class Router
     }
 
     /**
-     * @param Controller $controller
-     * @return HttpRoute
+     * @param $pattern
+     * @param \Closure $callable
+     * @return Router
      */
-    public function registerControllerRoute(Controller $controller) : HttpRoute
+    public function get($pattern, \Closure $callable) : Router
+    {
+        return $this->registerHttpRoute($pattern, 'GET', $callable);
+    }
+
+    /**
+     * @param $pattern
+     * @param \Closure $callable
+     * @return Router
+     */
+    public function post($pattern, \Closure $callable) : Router
+    {
+        return $this->registerHttpRoute($pattern, 'POST', $callable);
+    }
+
+    /**
+     * @param Controller $controller
+     * @return Router
+     */
+    public function registerControllerRoute(Controller $controller) : Router
     {
         return $this->registerHttpRoute(
             $controller->getPattern(),
             $controller->getMethod(),
             function () use ($controller) {
-                return $controller->dispatch();
+                return $controller->dispatch()->getPayload();
             }
         );
     }

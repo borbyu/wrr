@@ -66,8 +66,18 @@ class HttpResponse implements ResponseInterface
         foreach ($this->headers as $header) {
             header($header);
         }
-        echo $this->payload;
+        if (is_string($this->payload)) {
+            echo $this->payload;
+        }
         return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getPayload() : string
+    {
+        return $this->payload;
     }
 
     /**
