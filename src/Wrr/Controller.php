@@ -20,12 +20,12 @@ abstract class Controller
     /**
      * @var Request
      */
-    private $request = null;
+    private $request;
 
     /**
      * @var ResponseInterface
      */
-    private $response = null;
+    private $response;
 
     /**
      * Controller constructor.
@@ -62,7 +62,7 @@ abstract class Controller
     /**
      * @return string
      */
-    public function getPattern()
+    public function getPattern() : string
     {
         return '';
     }
@@ -70,7 +70,7 @@ abstract class Controller
     /**
      * @return string
      */
-    public function getMethod()
+    public function getMethod() : string
     {
         return '*';
     }

@@ -60,7 +60,7 @@ class HttpRoute implements RouteInterface
     /**
      * @param Request $request
      */
-    public function setRequest(Request $request)
+    public function setRequest(Request $request) : void
     {
         $this->request = $request;
     }
@@ -68,7 +68,7 @@ class HttpRoute implements RouteInterface
     /**
      * @return HttpResponse
      */
-    public function getResponse()
+    public function getResponse() : HttpResponse
     {
         $this->response = $this->response ?: new HttpResponse();
         return $this->response;
@@ -77,7 +77,7 @@ class HttpRoute implements RouteInterface
     /**
      * @return Request
      */
-    public function getRequest()
+    public function getRequest() : Request
     {
         $this->request = $this->request ?: Request::populateFromGlobals();
         return $this->request;
@@ -126,7 +126,7 @@ class HttpRoute implements RouteInterface
     {
         $regex = "@" . $this->pattern . "@";
         return preg_match($regex, $toMatch)
-        && ($this->method == '*' || $method == $this->method)
-        && (substr_count($toMatch, '/')) === (substr_count($this->pattern, '/'));
+        && ($this->method === '*' || $method === $this->method)
+        && substr_count($toMatch, '/') === substr_count($this->pattern, '/');
     }
 }

@@ -13,7 +13,7 @@ namespace Wrr\Route;
  * Class HelloWorldRoute
  * @package Wrr\Route
  */
-class HelloWorldRoute extends DefaultRoute
+class HelloWorldRoute extends HttpRoute
 {
     /**
      * Constructor

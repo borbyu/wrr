@@ -24,7 +24,7 @@ class JsonResponse extends HttpResponse
      * @param $data
      * @return JsonResponse
      */
-    public function setData($data)
+    public function setData($data) : JsonResponse
     {
         $this->json = json_encode($data);
         return $this;

@@ -1,5 +1,6 @@
 {
     "name": "borbyu/wrr",
+    "license": "MIT",
     "description": "Wrr is a Request Router",
     "minimum-stability": "stable",
     "authors": [
@@ -12,7 +13,9 @@
         "psr-0": {"Wrr\\": "src/"}
     },
     "require": {
-        "php": ">7"
+        "php": ">7",
+        "ext-json": "*",
+        "ext-apache": "*"
     },
     "require-dev": {
         "phpunit/phpunit": "5.2.*"

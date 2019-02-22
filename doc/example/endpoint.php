@@ -7,19 +7,18 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
-use Wrr\Response\JsonResponse;
 use Wrr\Router;
-use Wrr\Route\DefaultRoute;
-use Wrr\Response\DefaultResponse;
+use Wrr\Route\HttpRoute;
+use Wrr\Response\HttpResponse;
 
-require_once __DIR__ . '/../../../vendor/autoload.php';
+require_once __DIR__ . '/../../vendor/autoload.php';
 
 /*
  * make a wildcard route that covers everything and will result in a sane default
  */
 $router = new Router();
 $router->registerRoute(
-    new DefaultRoute(
+    new HttpRoute(
         '^/',
         function () {
             return "Wrr!... You've been served! ";
@@ -27,24 +26,7 @@ $router->registerRoute(
     )
 ); // catch all
 
-include_once 'ApiController.php';
-$controller = new \RestExample\ApiController(
-    \Wrr\Request::populateFromGlobals(),
-    new JsonResponse()
-);
-
-$jsonResponse = new JsonResponse();
-$router->registerHttpRoute(
-    'rest',
-    '*',
-    function () use ($controller) {
-        return $controller->dispatch();
-    }
-);
-
-$router->registerControllerRoute($controller);
-
-$defaultResponse = new DefaultResponse();
+$defaultResponse = new HttpResponse();
 $router->registerHttpRoute(
     'wrr',
     'GET',
@@ -61,6 +43,6 @@ try {
     $response = new \Wrr\Response\HttpResponse();
     $response
         ->setPayload($e->getMessage())
-        ->setResponseCode($e->getCode() ? $e->getCode() : 500)
+        ->setResponseCode($e->getCode() ?: 500)
         ->deliverPayload();
 }

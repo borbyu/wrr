@@ -58,13 +58,7 @@ class Request
     /**
      * @var array
      */
-    private $requestVars = [
-        'body' => [],
-        'get' => [],
-        'post' => [],
-        'cookie' => [],
-        'files' => []
-    ];
+    private $requestVars = [];
 
     /**
      * @var string
@@ -98,26 +92,21 @@ class Request
         if (function_exists('getallheaders')) {
             $headers = getallheaders();
             $request->setRequestHeaders($headers);
-        } else {
-            $headers = [];
         }
         $body = file_get_contents('php://input');
         $request->setRequestBody($body);
 
         $jsonData = json_decode($body, true);
         parse_str($body, $urlParsedData);
+        $urlParsedData = $urlParsedData ?: [];
+        $bodyData = $jsonData ?: $urlParsedData;
 
-        $bodyData = $jsonData ?: ($urlParsedData ?: []);
         foreach ($bodyData as $key => $item) {
             $request->setRequestVar('body', $key, $item);
         }
 
         $exists = function ($key) {
-            if (isset($_SERVER[$key])) {
-                return $_SERVER[$key];
-            } else {
-                return '';
-            }
+            return $_SERVER[$key] ?? '';
         };
         if (isset($_SERVER)) {
             $request->setUserAgent($exists('HTTP_USER_AGENT'));
@@ -158,7 +147,7 @@ class Request
     /**
      * @param string $requestBody
      */
-    public function setRequestBody($requestBody)
+    public function setRequestBody($requestBody) : void
     {
         $this->requestBody = $requestBody;
     }
@@ -166,7 +155,7 @@ class Request
     /**
      * @return string
      */
-    public function getRequestBody()
+    public function getRequestBody() : ?string
     {
         return $this->requestBody;
     }
@@ -174,7 +163,7 @@ class Request
     /**
      * @param array $requestHeaders
      */
-    public function setRequestHeaders(array $requestHeaders)
+    public function setRequestHeaders(array $requestHeaders) : void
     {
         $this->requestHeaders = $requestHeaders;
     }
@@ -190,7 +179,7 @@ class Request
     /**
      * @param array $requestVars
      */
-    public function setRequestVars(array $requestVars)
+    public function setRequestVars(array $requestVars) : void
     {
         $this->requestVars = $requestVars;
     }
@@ -207,87 +196,84 @@ class Request
      * @param int $index
      * @return mixed
      */
-    public function getUriVar($index)
+    public function getUriVar($index) : ?string
     {
         $uriFragments = explode('/', $this->getRelativeUri());
         array_shift($uriFragments);
-        return isset($uriFragments[$index]) ? $uriFragments[$index] : null;
+        $fragmentExists = isset($uriFragments[$index]);
+        return $fragmentExists ? $uriFragments[$index] : null;
     }
 
     /**
      * @param string $key
-     * @param null|string $container
+     * @param null|string $bag
      * @return mixed
      */
-    public function getRequestVar($key, $container = null)
+    public function getRequestVar(string $key, ?string $bag = null) : ?string
     {
-        if (is_null($container)) {
-            foreach ($this->requestVars as $container) {
-                if (isset($container[$key])) {
-                    return $container[$key];
+        if ($bag === null) {
+            foreach ($this->requestVars as $varBag) {
+                if (isset($varBag[$key])) {
+                    return $varBag[$key];
                 }
             }
             return null;
-        } else {
-            if (isset($this->requestVars[$container][$key])) {
-                return $this->requestVars[$container][$key];
-            }
-            return null;
         }
+        return $this->requestVars[$bag][$key] ?? null;
     }
 
     /**
-     * @return mixed
+     * @return string
      */
-    public function getRequestTime()
+    public function getRequestTime() : ?string
     {
         return $this->requestTime;
     }
 
     /**
-     * @return mixed
+     * @return string
      */
-    public function getRequestUri()
+    public function getRequestUri() : ?string
     {
         return $this->requestUri;
     }
 
     /**
-     * @return mixed
+     * @return string
      */
-    public function getRequestMethod()
+    public function getRequestMethod() : ?string
     {
         return $this->requestMethod;
     }
 
     /**
-     * @return mixed
+     * @return string
      */
-    public function getRemoteAddr()
+    public function getRemoteAddr() : ?string
     {
         return $this->remoteAddr;
     }
 
     /**
-     * @return mixed
+     * @return string
      */
-    public function getQueryString()
+    public function getQueryString() : string
     {
         return $this->queryString;
     }
 
     /**
-     * @return mixed
+     * @return string
      */
-    public function getRequestEndPoint()
+    public function getRequestEndPoint() : string
     {
         return $this->requestEndPoint;
     }
 
     /**
-     * @return mixed
+     * @return string
      */
-    public function getUserAgent()
+    public function getUserAgent() : string
     {
         return $this->userAgent;
     }
@@ -295,7 +281,7 @@ class Request
     /**
      * @param $requestTime
      */
-    public function setRequestTime($requestTime)
+    public function setRequestTime($requestTime) : void
     {
         $this->requestTime = $requestTime;
     }
@@ -303,7 +289,7 @@ class Request
     /**
      * @param $requestUri
      */
-    public function setRequestUri($requestUri)
+    public function setRequestUri($requestUri) : void
     {
         $this->requestUri = $requestUri;
     }
@@ -311,7 +297,7 @@ class Request
     /**
      * @param $requestMethod
      */
-    public function setRequestMethod($requestMethod)
+    public function setRequestMethod($requestMethod) : void
     {
         $this->requestMethod = $requestMethod;
     }
@@ -319,7 +305,7 @@ class Request
     /**
      * @param $remoteAddr
      */
-    public function setRemoteAddr($remoteAddr)
+    public function setRemoteAddr($remoteAddr) : void
     {
         $this->remoteAddr = $remoteAddr;
     }
@@ -327,7 +313,7 @@ class Request
     /**
      * @param $queryString
      */
-    public function setQueryString($queryString)
+    public function setQueryString($queryString) : void
     {
         $this->queryString = $queryString;
     }
@@ -335,7 +321,7 @@ class Request
     /**
      * @param $requestEndPoint
      */
-    public function setRequestEndPoint($requestEndPoint)
+    public function setRequestEndPoint($requestEndPoint) : void
     {
         $this->requestEndPoint = $requestEndPoint;
     }
@@ -343,7 +329,7 @@ class Request
     /**
      * @param $userAgent
      */
-    public function setUserAgent($userAgent)
+    public function setUserAgent($userAgent) : void
     {
         $this->userAgent = $userAgent;
     }
@@ -351,7 +337,7 @@ class Request
     /**
      * @param string $uriBase
      */
-    public function setUriBase($uriBase)
+    public function setUriBase($uriBase) : void
     {
         $this->uriBase = $uriBase;
     }
@@ -359,7 +345,7 @@ class Request
     /**
      * @return string
      */
-    public function getUriBase()
+    public function getUriBase() : string
     {
         return $this->uriBase;
     }
@@ -367,8 +353,8 @@ class Request
     /**
      * @return string
      */
-    public function getRelativeUri()
+    public function getRelativeUri() : string
     {
-        return str_replace($this->getUriBase(), "", $this->getRequestUri());
+        return str_replace($this->getUriBase(), '', $this->getRequestUri());
     }
 }

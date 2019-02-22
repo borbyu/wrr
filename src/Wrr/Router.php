@@ -26,7 +26,7 @@ class Router
     /**
      * @var null|Request
      */
-    private $request = null;
+    private $request;
 
     /**
      * @var array
@@ -70,7 +70,7 @@ class Router
     /**
      * @return array
      */
-    public function dumpRoutes()
+    public function dumpRoutes() : array
     {
         return $this->routes;
     }
@@ -176,6 +176,21 @@ class Router
                 return $controller->dispatch()->getPayload();
             }
         );
+    }
+
+    /**
+     * @param array $controllers
+     * @return Router
+     */
+    public function registerControllers(array $controllers) : Router
+    {
+        foreach ($controllers as $controller) {
+            if (!$controller instanceof Controller) {
+                continue;
+            }
+            $this->registerControllerRoute($controller);
+        }
+        return $this;
     }
 
     /**
