@@ -9,11 +9,13 @@
  */
 namespace Wrr;
 
+use PHPUnit\Framework\TestCase;
+
 /**
  * Class RequestTest
  * @package Wrr
  */
-class RequestTest extends \PHPUnit_Framework_TestCase
+class RequestTest extends TestCase
 {
     /**
      * mock helper
@@ -33,25 +35,19 @@ class RequestTest extends \PHPUnit_Framework_TestCase
             "REQUEST_URI" => "/cms/public/",
             "SCRIPT_NAME" => "/cms/public/index.php",
             "PHP_SELF" => "/cms/public/index.php",
-            "REQUEST_TIME" => "1385966801"
+            "REQUEST_TIME" => 1385966801
         ];
     }
 
-    /**
-     * @test
-     */
     public function testConstruct()
     {
         $request = new Request();
         $this->assertTrue($request instanceof Request);
 
         $request = new Request('/test');
-        $this->assertTrue($request->getRequestUri() == '/test');
+        $this->assertTrue($request->getRequestUri() === '/test');
     }
 
-    /**
-     * @test
-     */
     public function testPopulateFromGlobals()
     {
         $this->mockServerGlobal();
@@ -64,9 +60,6 @@ class RequestTest extends \PHPUnit_Framework_TestCase
         $this->assertTrue(is_object($request));
     }
 
-    /**
-     * @test
-     */
     public function testGetSetRequestVars()
     {
         $this->mockServerGlobal();
@@ -74,99 +67,75 @@ class RequestTest extends \PHPUnit_Framework_TestCase
         $request = Request::populateFromGlobals();
         $request->setRequestVar('get', 'foo', 'bar');
         $vars = $request->getRequestVars();
-        $this->assertTrue($vars['get']['foo'] == 'bar');
+        $this->assertTrue($vars['get']['foo'] === 'bar');
 
         $request->setRequestVar('baz', 'abc', 'def');
         $vars = $request->getRequestVars();
-        $this->assertTrue($vars['baz']['abc'] == 'def');
+        $this->assertTrue($vars['baz']['abc'] === 'def');
 
         $request->setRequestVars(['a' => 'b', 'c'=> 'd']);
         $vars = $request->getRequestVars();
-        $this->assertTrue($vars['a'] == 'b');
-        $this->assertTrue($vars['c'] == 'd');
+        $this->assertTrue($vars['a'] === 'b');
+        $this->assertTrue($vars['c'] === 'd');
         $this->assertTrue(!isset($var['baz']));
     }
 
-    /**
-     * @test
-     */
     public function testGetSetRequestBody()
     {
         $this->mockServerGlobal();
         $request = Request::populateFromGlobals();
         $request->setRequestBody('abc');
-        $this->assertTrue($request->getRequestBody() == 'abc');
+        $this->assertTrue($request->getRequestBody() === 'abc');
     }
 
-    /**
-     * @test
-     */
     public function testGetSetUserAgent()
     {
         $this->mockServerGlobal();
         $request = Request::populateFromGlobals();
         $request->setUserAgent('abc');
-        $this->assertTrue($request->getUserAgent() == 'abc');
+        $this->assertTrue($request->getUserAgent() === 'abc');
     }
 
-    /**
-     * @test
-     */
     public function testGetSetEndPoint()
     {
         $this->mockServerGlobal();
         $request = Request::populateFromGlobals();
         $request->setRequestEndPoint('abc');
-        $this->assertTrue($request->getRequestEndPoint() == 'abc');
+        $this->assertTrue($request->getRequestEndPoint() === 'abc');
     }
 
-    /**
-     * @test
-     */
     public function testGetSetMethod()
     {
         $this->mockServerGlobal();
         $request = Request::populateFromGlobals();
         $request->setRequestMethod('abc');
-        $this->assertTrue($request->getRequestMethod() == 'abc');
+        $this->assertTrue($request->getRequestMethod() === 'abc');
     }
 
-    /**
-     * @test
-     */
     public function testGetSetRemoteAddr()
     {
         $this->mockServerGlobal();
         $request = Request::populateFromGlobals();
         $request->setRemoteAddr('abc');
-        $this->assertTrue($request->getRemoteAddr() == 'abc');
+        $this->assertTrue($request->getRemoteAddr() === 'abc');
     }
 
-    /**
-     * @test
-     */
     public function testGetSetRequestTime()
     {
         $this->mockServerGlobal();
         $request = Request::populateFromGlobals();
         $request->setRequestTime('abc');
-        $this->assertTrue($request->getRequestTime() == 'abc');
+        $this->assertTrue($request->getRequestTime() === 'abc');
     }
 
-    /**
-     * @test
-     */
     public function testGetSetQueryString()
     {
         $this->mockServerGlobal();
         $request = Request::populateFromGlobals();
         $request->setQueryString('abc');
-        $this->assertTrue($request->getQueryString() == 'abc');
+        $this->assertTrue($request->getQueryString() === 'abc');
     }
 
-    /**
-     * @test
-     */
     public function testGetSetRequestHeaders()
     {
         $this->mockServerGlobal();
@@ -175,14 +144,11 @@ class RequestTest extends \PHPUnit_Framework_TestCase
         $this->assertTrue($request->getRequestHeaders() == ['array!']);
     }
 
-    /**
-     * @test
-     */
     public function testGetSetUriBase()
     {
         $this->mockServerGlobal();
         $request = Request::populateFromGlobals();
         $request->setUriBase('abc');
-        $this->assertTrue($request->getUriBase() == 'abc');
+        $this->assertTrue($request->getUriBase() === 'abc');
     }
 }
