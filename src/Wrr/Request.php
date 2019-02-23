@@ -18,42 +18,42 @@ class Request
     /**
      * @var string
      */
-    private $requestTime;
+    private $requestTime = '';
 
     /**
      * @var string
      */
-    private $requestUri;
+    private $requestUri = '';
 
     /**
      * @var string
      */
-    private $requestMethod;
+    private $requestMethod = '';
 
     /**
      * @var string
      */
-    private $remoteAddr;
+    private $remoteAddr = '';
 
     /**
      * @var string
      */
-    private $queryString;
+    private $queryString = '';
 
     /**
      * @var string
      */
-    private $requestEndPoint;
+    private $requestEndPoint = '';
 
     /**
      * @var string
      */
-    private $userAgent;
+    private $userAgent = '';
 
     /**
      * @var string
      */
-    private $uriBase;
+    private $uriBase = '';
 
     /**
      * @var array
